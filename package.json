@@ -8,5 +8,8 @@
     "start": "protractor conf.js"
   },
   "author": "Pugduddly, Zipsquibly",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "sequelize": "^3.24.8"
+  }
 }
