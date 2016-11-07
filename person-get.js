@@ -2,95 +2,92 @@
 
 // Configuration
 var loginData = {
-    'email'    :  process.env.ANCEMAIL,
-    'password' :  process.env.ANCPASS
+    'email'    : process.env.ANCEMAIL,
+    'password' : process.env.ANCPASS,
+    'dbhost'   : process.env.DBHOST || 'localhost',
+    'dbuser'   : process.env.DBUSER,
+    'dbpass'   : process.env.DBPASS,
+    'dbname'   : process.env.DBNAME || 'person_get'
 };
 
 var personName = 'Brian Carlson';
 
-var ec = protractor.ExpectedConditions;
+var Sequelize = require('sequelize'),
+    person    = require('./person.js'),
+    _         = require('lodash');
 
-function findPerson(name) {
-    // If I'm in tree view, go to person view
-    if (ec.presenceOf(element(by.css('.iconPersonFind.findPersonButton')))) {
-        element(by.css('[for="typeAheadPersonText"] span')).click();
-        browser.wait(ec.presenceOf(element(by.css('#personLinks .iconPerson'))));
-        element(by.css('#personLinks .iconPerson')).click();
+var ec        = protractor.ExpectedConditions,
+    sequelize = new Sequelize(`postgres://${loginData.dbuser}:${loginData.dbpass}@${loginData.dbhost}:5432/${loginData.dbname}`);
+
+var Person = sequelize.define('person', {
+    id      : {type : Sequelize.STRING, primaryKey : true},
+    fname   : Sequelize.STRING,
+    lname   : Sequelize.STRING,
+    sufname : Sequelize.STRING,
+    name    : Sequelize.STRING,
+    bdate   : Sequelize.STRING,
+    bplace  : Sequelize.STRING,
+    gender  : Sequelize.STRING,
+    status  : Sequelize.STRING,
+    ddate   : Sequelize.STRING,
+    dplace  : Sequelize.STRING,
+    father  : Sequelize.STRING,
+    mother  : Sequelize.STRING
+});
+
+beforeEach(function() {
+    isAngularSite(false);
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000000; // 1 minute
+});
+
+var treeId = 0,
+    tree_regex = /^http:\/\/[a-zA-Z]*.ancestry.com\/tree\/([0-9]*)/,
+    tree_tree = [],
+    tree_dont = [];
+
+function insertPerson(p) {
+    if (p && !_.includes(tree_dont, p)) {
+        tree_tree.push(p);
+        tree_dont.push(p);
     }
-    // Find person
-    browser.wait(ec.presenceOf(element(by.css('.iconPersonFind'))));
-    element(by.css('.iconPersonFind')).click();
-    element(by.css('#personLookupField')).sendKeys(name);
-    browser.wait(ec.presenceOf(element(by.css('#personLookupFieldResults li:first-child'))));
-    element(by.css('#personLookupFieldResults li:first-child')).click();
-    browser.wait(ec.presenceOf(element(by.css('#personCardContainer .userCardTitle'))));
 }
 
-function getPersonData() {
-    var person = {};
-    // Grab information
-    element(by.css('[onclick="personAnalyticsTrackClick(\'editMenuEntry\');"]')).click();
-    element(by.css('#quickEdit')).click();
-    browser.wait(ec.presenceOf(element(by.css('#fname'))));
-    return element(by.css('#fname')).getAttribute('value').then(function(name) {
-        // First name + middle name
-        person.fname = name;
-        return element(by.css('#lname')).getAttribute('value');
-    }).then(function(name) {
-        // Last name
-        person.lname = name;
-        return element(by.css('#sufname')).getAttribute('value');
-    }).then(function(name) {
-        // Suffix
-        person.sufname = name;
-        if (person.sufname != '') {
-            person.name = person.fname + ' ' + person.lname + ' ' + person.sufname;
-        } else {
-            person.name = person.fname + ' ' + person.lname;
-        }
-        return element(by.css('#bdate')).getAttribute('value');
-    }).then(function(date) {
-        // Birth date
-        person.bdate = date;
-        return element(by.css('#bplace')).getAttribute('value');
-    }).then(function(place) {
-        // Birth place
-        person.bplace = place;
-        return element(by.css('#genderRadioCollection + ul li input[checked="checked"]')).getAttribute('value');
-    }).then(function(gender) {
-        // Gender
-        person.gender = gender;
-        return element(by.css('#statusRadioCollection + ul li input[checked="checked"]')).getAttribute('value');
-    }).then(function(status) {
-        // Status (Living / Deceased)
-        person.status = status;
-        return element(by.css('#ddate')).getAttribute('value');
-    }).then(function(date) {
-        // Death date
-        person.ddate = date;
-        return element(by.css('#dplace')).getAttribute('value');
-    }).then(function(place) {
-        // Death place
-        person.dplace = place;
-        return element(by.css('#familySection li [onclick="personAnalyticsTrackFactsPersonClick(\'ResearchParent\');"].factItemMale')).getAttribute('href');
-    }).then(function(url) {
-        // Link to father
-        person.father = url;
-        return element(by.css('#familySection li [onclick="personAnalyticsTrackFactsPersonClick(\'ResearchParent\');"].factItemFemale')).getAttribute('href');
-    }).then(function(url) {
-        // Link to mother
-        person.mother = url;
-        return person;
+function savePerson(p) {
+    console.log('Saving person: ' + p.name);
+    return Person.upsert(p).then(function() {
+        insertPerson(p.father);
+        insertPerson(p.mother);
+        _.each(p.siblings, insertPerson);
+        _.each(p.spouse, insertPerson);
+        _.each(p.children, insertPerson);
     });
 }
 
-beforeEach(function(){
-    isAngularSite(false);
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000; // 1 minute
-});
+function startTree() {
+    return person.getPersonData().then(function(p) {
+        tree_dont.push(p.id);
+        return sequelize.sync().then(function() {
+            return savePerson(p);
+        });
+    });
+}
+
+function foo(done) {
+    if (tree_tree.length) {
+        var id = tree_tree.shift();
+        person.goToPerson(treeId, id);
+        return person.getPersonData().then(function (p) {
+            return savePerson(p);
+        }).then(function() {
+            return foo(done);
+        });
+    } else {
+        done();
+    }
+}
 
 describe('get-person', function() {
-    it('should work', function() {
+    it('should work', function(done) {
         browser.get('http://www.ancestry.com');
 
         expect(browser.getTitle()).toEqual('Ancestry® | Genealogy, Family Trees & Family History Records');
@@ -107,20 +104,17 @@ describe('get-person', function() {
         element(by.css('#navTrees')).click();
         element(by.css('#navTreesMenu ul li:first-child')).click();
 
-        // Find person
-        findPerson(personName);
-        getPersonData().then(function(person) {
-            console.log('person:');
-            console.log(person);
-            browser.get(person.father);
-            getPersonData().then(function(father) {
-                console.log('father:');
-                console.log(father);
-                browser.get(person.mother);
-                getPersonData().then(function(mother) {
-                    console.log('mother:');
-                    console.log(mother);
-                });
+        var p;
+
+        // Get ID of tree
+        browser.getCurrentUrl().then(function(url) {
+            treeId = parseInt(url.match(tree_regex)[1]);
+
+            // Find person
+            person.findPerson(personName);
+
+            startTree().then(function() {
+                foo(done);
             });
         });
     });
