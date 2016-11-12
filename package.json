@@ -10,6 +10,7 @@
   "author": "Pugduddly, Zipsquibly",
   "license": "GPL-3.0",
   "dependencies": {
+    "lodash": "^4.16.6",
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.24.8"
