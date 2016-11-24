@@ -1,0 +1,11 @@
+<table id="people">
+    {{#each people}}
+    <tr><td><span class="hovul" style="width:auto;">
+      <a href="/person?id={{this.id}}">{{this.name}}</a>
+    </span></td></tr>
+    {{else}}
+    <tr><td><span class="hovul" style="width:auto;">
+      No people here :(
+    </span></td></tr>
+    {{/each}}
+</table>

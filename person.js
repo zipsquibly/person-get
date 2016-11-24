@@ -85,12 +85,12 @@ function init() {
 function findPersons(matchObject = {}, offset = 0, limit = 10) {
     return Person.findAndCountAll({
         where: matchObject,
-        offset: 0,
+        offset: offset,
         limit: limit
     })
     .then(function(result) {
         console.log('FOUND:', result.count);
-        return result.rows;
+        return _.map(result.rows, (row)=>row.dataValues);
     });
 }
 

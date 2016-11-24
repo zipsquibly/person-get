@@ -1,0 +1,56 @@
+.ic_sh { /* Search Icon */
+    background: url(//ssl.gstatic.com/gb/images/v1_76783e20.png);
+    -webkit-background-size: 92px 2541px;
+    background-size: 92px 2541px;
+    background-position: 0 -415px;
+    display: inline-block;
+    margin: -1px;
+    height: 30px;
+    width: 30px;
+}
+.ic_th { /* Trash Icon */
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAQUlEQVR4AWP4TyIc7BogwNjA+IPxfyD8YGwAFsCtAawQE37AreE/dohTAy6AWwNWO4alhlENHzCTHgPJ+WHYaQAAkAYv84GbjjcAAAAASUVORK5CYII=);
+    -webkit-background-size: 24px 24px;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    margin: -1px;
+    height: 24px;
+    width: 24px;
+}
+.ic_ss { /* Settings Icon */
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAQAAAADHm0dAAAAw0lEQVR4Ab3SPU6CQRAG4Ad6iH6egZIL6GkoaMQriJ3BM/hzAs6DDSQWxgoLDYV/+dbEbCbTECIFz3STdzeT2XUgI+WvRnZ6qNF7W3QNdHBmVaNLp+gY6MpMFAtzrRLVmlsoJpLGOkc85yPWGmEa7W8zDU7c+InuVBha1ua1YBZTDyV974rWEaHnQ/GmD9mX4gXZk+IT9rj1X7NeyRvooSdv4FJovCpRGysbea/Hkostr/WoON/7Dwh3NXprp3GNjh3EL96FjlMUNsVTAAAAAElFTkSuQmCC);
+    -webkit-background-size: 21px 21px;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    margin: -1px;
+    height: 21px;
+    width: 21px;
+}
+.ic_hp { /* Help Icon */
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAQAAAADHm0dAAAAmUlEQVR4Ab2T7QmEQAwFp4QtYUu4Aq4IS9jSLCUlWMAVYQc55fQRHizcLzMgBIZoPiT/5gGVQSgJxkSls5HGRncVXuxVEjvd1Ltiy8gzIpsqVxXGlf3ES+ZmVFXNnPE+OENqVDUruJpS6WSlfoCrzVS1ZaoeQi8X3tac8GGJzwHCh9Xmqq9gISf4YllNmJ8LwcpC8yN84i/4Atxdv7BI3MwDAAAAAElFTkSuQmCC);
+    -webkit-background-size: 21px 21px;
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    margin: -1px;
+    height: 21px;
+    width: 21px;
+}
+.ic_et { /* Edit Icon */
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAXElEQVR4AaXRwQ2AIBSD4Y7kSGzRNRihI7oBJlUOz2I0kR7/j4QEjJd9A/dDcVB4AmwcnpaAnRt1kgVw2i+iAPOmSYs3zOx1oIKaBRSQuYLIASInyJzAOcH/3zwA4sXL9n1TAXwAAAAASUVORK5CYII=);
+    -webkit-background-size: 16px 16px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    margin: -1px;
+    /*height: 16px;
+    width: 16px;*/
+    height: 30px;
+    width: 20px;
+}
