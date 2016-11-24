@@ -1,0 +1,14 @@
+{{#each people}}
+<h1>{{this.name}} ({{getYear this.bdate}}-{{getYear this.ddate}})</h1>
+<p>
+BIRTH {{this.bdate}} • {{this.bplace}}<br>
+{{#if this.ddate}}
+DEATH {{this.ddate}} • {{this.dplace}}
+{{else}}
+DEATH Living
+{{/if}}
+</p>
+{{else}}
+<h1>No people here :(</h1>
+<p>ERR_NOPEOPLEFOUND</p>
+{{/each}}
