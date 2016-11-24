@@ -32,7 +32,7 @@ var Person = sequelize.define('person', {
 });
 
 Person.belongsToMany(Person, { as: 'Children', through: 'person_children' });
-Person.belongsToMany(Person, { as: 'Spouses', through: 'person_spouses' });
+Person.belongsToMany(Person, { as: 'Spouses',  through: 'person_spouses'  });
 Person.belongsToMany(Person, { as: 'Siblings', through: 'person_siblings' });
 
 function savePerson(personData, children = [], spouses = [], siblings = []) {
@@ -94,10 +94,24 @@ function findPersons(matchObject = {}, offset = 0, limit = 10) {
     });
 }
 
+function getPerson(id) {
+    return Person.findOne({
+        where: {id: id},
+        include: [
+          { model: Person, as: "Children" },
+          { model: Person, as: "Siblings" },
+          { model: Person, as: "Spouses"  }
+        ]
+    }).then(function(person) {
+        return person.dataValues;
+    });
+}
+
 module.exports = {
     loginData: loginData,
     init: init,
     save: savePerson,
     findPersons: findPersons,
+    getPerson: getPerson,
     Person: Person
 };
