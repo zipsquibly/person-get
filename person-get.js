@@ -213,7 +213,7 @@ function findPerson(name) {
 
 function savePerson(p) {
     console.log('Saving person: ' + p.name);
-    return person.save(p).then(function() {
+    return person.save(p, p.children, p.spouse, p.siblings).then(function() {
         insertPerson(p.father);
         insertPerson(p.mother);
         _.each(p.siblings, insertPerson);
